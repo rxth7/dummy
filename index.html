@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>FLAMES Love Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #ffb6b9 0%, #fcd5ce 100%);
+            min-height: 100vh;
+            color: #2d3142;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 6px 32px 0 #fa8eaf44;
+            padding: 36px 28px 28px 28px;
+            text-align: center;
+            position: relative;
+            animation: fadeIn 1s;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            font-size: 2.3rem;
+            letter-spacing: 2px;
+            color: #e63946;
+            margin-bottom: 12px;
+            font-family: 'Pacifico', cursive, sans-serif;
+            text-shadow: 0 2px 8px #f7cad0;
+        }
+        
+        label,
+        p {
+            font-size: 1.1rem;
+            margin: 12px 0 8px 0;
+        }
+        
+        input[type="text"] {
+            width: 80%;
+            padding: 10px 14px;
+            margin: 10px 0 18px 0;
+            border: 2px solid #f7cad0;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: border 0.2s;
+            text-transform: uppercase;
+            /* Always show caps */
+        }
+        
+        input[type="text"]:focus {
+            border: 2px solid #e63946;
+            outline: none;
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, #ff6f91, #ffb6b9);
+            border: none;
+            color: #fff;
+            padding: 12px 32px;
+            border-radius: 22px;
+            font-size: 1.15rem;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 12px;
+            box-shadow: 0 2px 8px #fa8eaf44;
+            transition: background 0.2s, transform 0.1s;
+        }
+        
+        .btn:active {
+            transform: scale(0.97);
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 18px 0;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-right: 10px;
+            accent-color: #e63946;
+        }
+        
+        .flames-animation {
+            margin: 24px 0 0 0;
+            font-size: 2.3rem;
+            letter-spacing: 18px;
+            display: flex;
+            justify-content: center;
+            font-family: 'Pacifico', cursive, sans-serif;
+            user-select: none;
+        }
+        
+        .flames-letter {
+            opacity: 0.5;
+            transition: color 0.4s, opacity 0.4s, transform 0.3s;
+            color: #b5838d;
+            filter: blur(1px);
+        }
+        
+        .flames-letter.active {
+            color: #e63946;
+            opacity: 1;
+            filter: none;
+            transform: scale(1.3) rotate(-10deg);
+            text-shadow: 0 0 14px #ffb6b9, 0 0 22px #e63946aa;
+            animation: bounce 0.5s;
+        }
+        
+        @keyframes bounce {
+            0% {
+                transform: scale(1.3) rotate(-10deg);
+            }
+            50% {
+                transform: scale(1.6) rotate(10deg);
+            }
+            100% {
+                transform: scale(1.3) rotate(-10deg);
+            }
+        }
+        
+        .result-box {
+            margin: 30px 0 0 0;
+            padding: 18px 0 0 0;
+            font-size: 1.4rem;
+            min-height: 60px;
+            font-family: 'Segoe Script', cursive, sans-serif;
+            color: #e63946;
+            position: relative;
+        }
+        
+        .excitement {
+            margin: 16px 0 0 0;
+            font-size: 2.1rem;
+            animation: pop 0.7s;
+            letter-spacing: 2px;
+            font-family: 'Pacifico', cursive, sans-serif;
+            color: #ff6f91;
+            text-shadow: 0 2px 16px #f7cad0;
+        }
+        
+        @keyframes pop {
+            0% {
+                transform: scale(0.2);
+                opacity: 0;
+            }
+            70% {
+                transform: scale(1.3);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .love-percent-box {
+            margin-top: 36px;
+            background: linear-gradient(90deg, #ffb6b9 0%, #fcd5ce 100%);
+            border-radius: 18px;
+            padding: 18px 0 10px 0;
+            box-shadow: 0 2px 12px #fa8eaf33;
+            font-size: 1.3rem;
+            color: #e63946;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .love-bar-bg {
+            width: 80%;
+            height: 14px;
+            background: #f7cad0;
+            border-radius: 8px;
+            margin: 12px auto 0 auto;
+            position: relative;
+        }
+        
+        .love-bar {
+            height: 100%;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #e63946 0%, #ffb6b9 100%);
+            width: 0;
+            transition: width 1.2s cubic-bezier(.6, .2, .4, 1.2);
+            box-shadow: 0 0 8px #e63946cc;
+        }
+        
+        @media (max-width: 500px) {
+            .container {
+                max-width: 97vw;
+                padding: 18px 2vw;
+            }
+            .flames-animation {
+                font-size: 1.5rem;
+                letter-spacing: 8px;
+            }
+            h1 {
+                font-size: 1.3rem;
+            }
+        }
+        
+        .heart {
+            display: inline-block;
+            color: #ff6f91;
+            font-size: 1.7em;
+            animation: heartBeat 1.5s infinite;
+            margin: 0 2px;
+        }
+        
+        @keyframes heartBeat {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            30% {
+                transform: scale(1.4);
+            }
+            60% {
+                transform: scale(1);
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container" id="welcomePage">
+        <h1>FLAMES Matchmaker</h1>
+        <p>Discover your relationship with a fun childhood game and love percentage!</p>
+        <div class="checkbox-container">
+            <input type="checkbox" id="agreeCheck">
+            <label for="agreeCheck">I agree to play just for fun!</label>
+        </div>
+        <button class="btn" id="letsGoBtn" disabled>Let's Go!</button>
+    </div>
+    <div class="container" id="gamePage" style="display:none;">
+        <h1>FLAMES Game</h1>
+        <label for="maleName">Your Name</label><br>
+        <input type="text" id="maleName" placeholder="Enter your name" autocomplete="off">
+        <br>
+        <label for="femaleName">Partner's Name</label><br>
+        <input type="text" id="femaleName" placeholder="Enter partner's name" autocomplete="off">
+        <br>
+        <button class="btn" id="flamesBtn">Reveal FLAMES & Love %</button>
+        <div class="flames-animation" id="flamesAnim">
+            <span class="flames-letter">F</span>
+            <span class="flames-letter">L</span>
+            <span class="flames-letter">A</span>
+            <span class="flames-letter">M</span>
+            <span class="flames-letter">E</span>
+            <span class="flames-letter">S</span>
+        </div>
+        <div class="result-box" id="flamesResult"></div>
+        <div id="excitementAnim"></div>
+        <div class="love-percent-box">
+            <div>Love Percentage</div>
+            <div style="font-size:2.2rem; margin:8px 0 0 0;" id="lovePercent">--%</div>
+            <div class="love-bar-bg">
+                <div class="love-bar" id="loveBar"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Welcome page logic
+        const agreeCheck = document.getElementById('agreeCheck');
+        const letsGoBtn = document.getElementById('letsGoBtn');
+        const welcomePage = document.getElementById('welcomePage');
+        const gamePage = document.getElementById('gamePage');
+
+        agreeCheck.addEventListener('change', () => {
+            letsGoBtn.disabled = !agreeCheck.checked;
+        });
+        letsGoBtn.addEventListener('click', () => {
+            welcomePage.style.display = 'none';
+            gamePage.style.display = 'block';
+        });
+
+        // FLAMES logic
+        const flamesBtn = document.getElementById('flamesBtn');
+        const maleNameInput = document.getElementById('maleName');
+        const femaleNameInput = document.getElementById('femaleName');
+        const flamesAnim = document.getElementById('flamesAnim');
+        const flamesResult = document.getElementById('flamesResult');
+        const excitementAnim = document.getElementById('excitementAnim');
+        const lovePercent = document.getElementById('lovePercent');
+        const loveBar = document.getElementById('loveBar');
+
+        const FLAMES_MAP = {
+            0: {
+                word: "SIBLINGS",
+                emoji: "👫",
+                excite: "SIBLING VIBES!"
+            },
+            1: {
+                word: "FRIENDS",
+                emoji: "🤝",
+                excite: "BEST FRIENDS!"
+            },
+            2: {
+                word: "LOVERS",
+                emoji: "💑",
+                excite: "LOVE IS IN THE AIR!"
+            },
+            3: {
+                word: "AFFECTION",
+                emoji: "😍",
+                excite: "SWEET AFFECTION!"
+            },
+            4: {
+                word: "MARRIAGE",
+                emoji: "💍",
+                excite: "WEDDING BELLS!"
+            },
+            5: {
+                word: "ENEMIES",
+                emoji: "😈",
+                excite: "OOPS! ENEMIES!"
+            },
+        };
+        const FLAMES_LETTERS = ['F', 'L', 'A', 'M', 'E', 'S'];
+
+        // Helper: hash for consistent percentage
+        function hashNames(n1, n2) {
+            let a = n1.trim().toUpperCase();
+            let b = n2.trim().toUpperCase();
+            if (a > b)[a, b] = [b, a];
+            let str = a + ':' + b;
+            let hash = 5381;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) + hash) + str.charCodeAt(i);
+            }
+            return Math.abs(hash);
+        }
+
+        // Helper: Calculate percentage (always same for same names)
+        function getLovePercent(name1, name2) {
+            if (!name1 || !name2) return '--';
+            if (isSpecialCouple(name1, name2)) return '100';
+            if (name1.trim().toUpperCase() === name2.trim().toUpperCase()) return '0';
+            let hash = hashNames(name1, name2);
+            return 50 + (hash % 50);
+        }
+
+        // FLAMES calculation
+        function flamesResultIndex(name1, name2) {
+            if (isSpecialCouple(name1, name2)) return 4; // Marriage
+            let a = name1.trim().toUpperCase().replace(/[^A-Z]/g, '');
+            let b = name2.trim().toUpperCase().replace(/[^A-Z]/g, '');
+            let arrA = a.split('');
+            let arrB = b.split('');
+            for (let i = 0; i < arrA.length; i++) {
+                let idx = arrB.indexOf(arrA[i]);
+                if (idx !== -1) {
+                    arrB.splice(idx, 1);
+                    arrA[i] = '';
+                }
+            }
+            let count = arrA.filter(x => x).length + arrB.length;
+            if (count === 0) return 0;
+            let idx = count % 6;
+            return idx;
+        }
+
+        // Helper: check for special couple
+        function isSpecialCouple(n1, n2) {
+            let a = n1.trim().toUpperCase();
+            let b = n2.trim().toUpperCase();
+            return (
+                (a === "RITHESH" && b === "KUSHI") ||
+                (a === "KUSHI" && b === "RITHESH")
+            );
+        }
+
+        // Animation for FLAMES (always ends on correct letter)
+        function animateFLAMES(idx, cb) {
+            let letters = flamesAnim.querySelectorAll('.flames-letter');
+            letters.forEach(l => l.classList.remove('active'));
+            let i = 0,
+                cycles = 2;
+            // Correct the total steps to land on the right letter
+            let animIdx = (idx === 0 ? 5 : idx - 1);
+            let total = cycles * FLAMES_LETTERS.length + animIdx;
+
+            function highlight() {
+                letters.forEach(l => l.classList.remove('active'));
+                if (i < total) {
+                    letters[i % FLAMES_LETTERS.length].classList.add('active');
+                    i++;
+                    setTimeout(highlight, 120 + 16 * i);
+                } else {
+                    // Always highlight the correct result index at the end
+                    letters.forEach(l => l.classList.remove('active'));
+                    letters[animIdx].classList.add('active');
+                    cb && cb();
+                }
+            }
+            highlight();
+        }
+
+        // Excitement animation
+        function showExcitement(idx, name1, name2) {
+            excitementAnim.innerHTML = '';
+            let info = FLAMES_MAP[idx];
+            if (isSpecialCouple(name1, name2)) {
+                info = {
+                    word: "MARRIAGE",
+                    emoji: "💍",
+                    excite: "PERFECT MATCH! WEDDING BELLS!"
+                };
+            }
+            let div = document.createElement('div');
+            div.className = 'excitement';
+            div.innerHTML = `${info.emoji} ${info.excite}`;
+            excitementAnim.appendChild(div);
+        }
+
+        // Love bar animation
+        function animateLoveBar(percent) {
+            loveBar.style.width = '0';
+            setTimeout(() => {
+                loveBar.style.width = percent + '%';
+            }, 100);
+        }
+
+        // Main button
+        flamesBtn.addEventListener('click', () => {
+            let name1 = maleNameInput.value.toUpperCase();
+            let name2 = femaleNameInput.value.toUpperCase();
+            flamesResult.innerHTML = '';
+            excitementAnim.innerHTML = '';
+            lovePercent.innerText = '--%';
+            animateLoveBar(0);
+
+            if (!name1.trim() || !name2.trim()) {
+                flamesResult.innerHTML = '<span style="color:#b5838d;">Please enter both names!</span>';
+                return;
+            }
+            // Calculate FLAMES and percentage
+            let idx = flamesResultIndex(name1, name2);
+            animateFLAMES(idx, () => {
+                let info = FLAMES_MAP[idx];
+                if (isSpecialCouple(name1, name2)) {
+                    info = {
+                        word: "MARRIAGE",
+                        emoji: "💍",
+                        excite: "PERFECT MATCH! WEDDING BELLS!"
+                    };
+                }
+                flamesResult.innerHTML = `<span style="font-size:1.7rem;">${info.word} ${info.emoji}</span>`;
+                showExcitement(idx, name1, name2);
+            });
+
+            // Love percentage
+            let percent = getLovePercent(name1, name2);
+            lovePercent.innerText = percent + '%';
+            animateLoveBar(percent);
+
+            // Add hearts if high percentage
+            if (percent >= 80) {
+                lovePercent.innerHTML += ' <span class="heart">❤</span>';
+            }
+        });
+
+        // Enter key triggers
+        [maleNameInput, femaleNameInput].forEach(input => {
+            input.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') flamesBtn.click();
+            });
+        });
+    </script>
+</body>
+
+</html>
